@@ -12,11 +12,16 @@
         #popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); padding: 20px; border: 1px solid #0f0; display: none; z-index: 20; max-width: 300px; text-align: center; }
         #popup button { background: #0f0; color: #000; border: none; padding: 8px; cursor: pointer; margin-top: 10px; }
         #fallback { display: none; text-align: center; padding: 20px; }
+        /* Loading spinner */
+        #loading { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
+        #loading::after { content: ''; box-sizing: border-box; width: 40px; height: 40px; border-radius: 50%; border: 4px solid #0f0; border-top-color: transparent; animation: spinner 0.8s linear infinite; }
+        @keyframes spinner { to { transform: rotate(360deg); } }
         @media (max-width: 768px) { canvas { /* Reduce intensity for mobile */ } }
     </style>
 </head>
 <body>
     <canvas id="flavorCanvas" aria-label="Dynamic cascade of flavor words inspired by digital rain"></canvas>
+    <div id="loading" style="display: block;"></div> <!-- Shown initially -->
     <div id="controls">
         <button id="pauseBtn" aria-label="Pause animation">Pause</button>
     </div>
@@ -35,20 +40,39 @@
         canvas.width = width;
         canvas.height = height;
 
-        // Sample flavor data (replace with your JSON/API fetch)
-        const flavorData = {
-            sweet: { words: ["CHOCOLATE", "HONEY", "VANILLA", "STRAWBERRY", "CARAMEL", "MAPLE", "BERRY", "PEACH"], colors: ["#FF69B4", "#FFA500", "#FFD700"], descriptions: { "CHOCOLATE": "Rich, melty bliss with cocoa notes." /* Add per word */ } },
-            savory: { words: ["UMAMI", "CHEESE", "MUSHROOM", "TRUFFLE", "BACON", "SOY", "GARLIC", "ONION"], colors: ["#228B22", "#556B2F", "#8B4513"], descriptions: { "UMAMI": "Deep, savory depth from glutamates." } },
-            spicy: { words: ["SPICY", "CHILI", "WASABI", "KIMCHI", "PEPPER", "GINGER", "CURRY", "SRIRACHA"], colors: ["#FF4500", "#DC143C", "#B22222"], descriptions: { "SPICY": "Fiery heat that tingles the tongue." } },
-            exotic: { words: ["DURIAN", "MATCHA", "YUZU", "ASAFETIDA", "SAFFRON", "TAMARIND", "LYCHEE", "DRAGONFRUIT"], colors: ["#FFD700", "#90EE90", "#FFFFE0"], descriptions: { "DURIAN": "Custard-like with funky onion vibes." } }
-            // Expand with your real data, e.g., fetch('your-api/flavors.json').then(data => flavorData = data);
-        };
+        // Initialize empty, load dynamically
+        let flavorData = {};
+
+        // Fetch JSON and start animation
+        fetch('./flavors.json')
+          .then(response => {
+            if (!response.ok) throw new Error('Failed to load flavors.json: ' + response.status);
+            return response.json();
+          })
+          .then(data => {
+            flavorData = data;
+            document.getElementById('loading').style.display = 'none'; // Hide spinner
+            draw(); // Start animation once loaded
+          })
+          .catch(error => {
+            console.error('Flavor fetch failed:', error);
+            document.getElementById('loading').style.display = 'none'; // Hide spinner
+            document.getElementById('fallback').textContent = 'Error loading flavors: ' + error.message + '. Using fallback data.';
+            document.getElementById('fallback').style.display = 'block';
+            // Fallback to minimal hardcoded data
+            flavorData = {
+              sweet: { words: ["CHOCOLATE", "HONEY"], colors: ["#FF69B4", "#FFA500"], descriptions: { "CHOCOLATE": "Fallback: Rich cocoa." } },
+              savory: { words: ["UMAMI", "CHEESE"], colors: ["#228B22", "#556B2F"], descriptions: { "UMAMI": "Fallback: Savory depth." } }
+              // Add minimal others if needed
+            };
+            draw();
+          });
 
         const columns = Math.floor(width / 20);
         const drops = Array(columns).fill(0).map(() => ({
             y: Math.random() * height / 20,
-            speed: 0.5 + Math.random() * 0.5, // Slower base speed (0.5-1 instead of 1-1.5)
-            category: Object.keys(flavorData)[Math.floor(Math.random() * Object.keys(flavorData).length)]
+            speed: 0.5 + Math.random() * 0.5, // Slower base speed
+            category: Object.keys(flavorData)[Math.floor(Math.random() * Object.keys(flavorData).length)] // Will update after fetch
         }));
 
         function getColorForWord(category) {
@@ -78,7 +102,7 @@
 
         // Mock click detection (simplified; for real, use raycasting)
         canvas.addEventListener('click', (e) => {
-            if (isPaused) return;
+            if (isPaused || Object.keys(flavorData).length === 0) return;
             // Simulate hitting a random word for demo
             const category = drops[Math.floor(e.clientX / 20)].category;
             const word = flavorData[category].words[Math.floor(Math.random() * flavorData[category].words.length)];
@@ -99,8 +123,8 @@
         }
 
         function draw() {
-            if (isPaused) return;
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.03)'; // Slightly slower fade for lingering trails
+            if (isPaused || Object.keys(flavorData).length === 0) return;
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.03)'; // Slightly slower fade
             ctx.fillRect(0, 0, width, height);
 
             drops.forEach((drop, i) => {
@@ -130,125 +154,10 @@
 
         // Fallback for no JS
         if (!canvas.getContext) document.getElementById('fallback').style.display = 'block';
-        else draw();
-    const canvas = document.getElementById('flavorCanvas');
-const ctx = canvas.getContext('2d');
-let width = window.innerWidth;
-let height = window.innerHeight;
-canvas.width = width;
-canvas.height = height;
-
-// Initialize empty, load dynamically
-let flavorData = {};
-
-// Fetch JSON and start animation
-fetch('./flavors.json')
-  .then(response => {
-    if (!response.ok) throw new Error('Failed to load flavors.json');
-    return response.json();
-  })
-  .then(data => {
-    flavorData = data;
-    draw(); // Start animation once loaded
-  })
-  .catch(error => {
-    console.error('Flavor fetch failed:', error);
-    // Fallback to minimal hardcoded data if fetch fails
-    flavorData = {
-      sweet: { words: ["CHOCOLATE", "HONEY"], colors: ["#FF69B4", "#FFA500"], descriptions: { "CHOCOLATE": "Fallback: Rich cocoa." } },
-      savory: { words: ["UMAMI", "CHEESE"], colors: ["#228B22", "#556B2F"], descriptions: { "UMAMI": "Fallback: Savory depth." } }
-      // Add minimal others if needed
-    };
-    draw();
-  });
-
-const columns = Math.floor(width / 20);
-const drops = Array(columns).fill(0).map(() => ({
-    y: Math.random() * height / 20,
-    speed: 0.5 + Math.random() * 0.5, // Slower base speed
-    category: Object.keys(flavorData)[Math.floor(Math.random() * Object.keys(flavorData).length)] // Will update after fetch
-}));
-
-function getColorForWord(category) {
-    const colors = flavorData[category].colors;
-    return colors[Math.floor(Math.random() * colors.length)];
-}
-
-let speedMultiplier = 1;
-let isPaused = false;
-let animationFrameId;
-
-canvas.addEventListener('mouseenter', () => { if (!isPaused) speedMultiplier = 0.3; });
-canvas.addEventListener('mouseleave', () => { if (!isPaused) speedMultiplier = 1; });
-
-window.addEventListener('resize', () => {
-    width = window.innerWidth;
-    height = window.innerHeight;
-    canvas.width = width;
-    canvas.height = height;
-});
-
-document.getElementById('pauseBtn').addEventListener('click', () => {
-    isPaused = !isPaused;
-    document.getElementById('pauseBtn').textContent = isPaused ? 'Play' : 'Pause';
-    if (!isPaused) draw();
-});
-
-// Mock click detection (simplified; for real, use raycasting)
-canvas.addEventListener('click', (e) => {
-    if (isPaused || Object.keys(flavorData).length === 0) return;
-    // Simulate hitting a random word for demo
-    const category = drops[Math.floor(e.clientX / 20)].category;
-    const word = flavorData[category].words[Math.floor(Math.random() * flavorData[category].words.length)];
-    showPopup(word, flavorData[category].descriptions[word] || "Delicious flavor profile coming soon!");
-});
-
-function showPopup(title, desc) {
-    document.getElementById('popupTitle').textContent = title;
-    document.getElementById('popupDesc').textContent = desc;
-    document.getElementById('popup').style.display = 'block';
-    isPaused = true; // Pause rain during popup
-}
-
-function closePopup() {
-    document.getElementById('popup').style.display = 'none';
-    isPaused = false;
-    draw();
-}
-
-function draw() {
-    if (isPaused || Object.keys(flavorData).length === 0) return;
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.03)'; // Slightly slower fade
-    ctx.fillRect(0, 0, width, height);
-
-    drops.forEach((drop, i) => {
-        const category = drop.category;
-        const word = flavorData[category].words[Math.floor(Math.random() * flavorData[category].words.length)];
-        const color = getColorForWord(category);
-
-        ctx.save();
-        ctx.translate(i * 20, drop.y * 20);
-        ctx.rotate(Math.random() * 0.2 - 0.1);
-        ctx.shadowColor = color;
-        ctx.shadowBlur = 10;
-        ctx.fillStyle = color;
-        ctx.font = 'bold 18px monospace';
-        ctx.fillText(word, 0, 0);
-        ctx.restore();
-
-        drop.y += drop.speed * speedMultiplier;
-        if (drop.y * 20 > height && Math.random() > 0.97) {
-            drop.y = 0;
-            drop.category = Object.keys(flavorData)[Math.floor(Math.random() * Object.keys(flavorData).length)];
-        }
-    });
-
-    animationFrameId = requestAnimationFrame(draw);
-}
-
-// Fallback for no JS
-if (!canvas.getContext) document.getElementById('fallback').style.display = 'block';
+    </script>
 </body>
 </html>
+
+
 Initial Flavor Stream landing page.
 
