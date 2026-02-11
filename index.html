@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlavorBot - Enter the Matrix of Taste</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; font-family: monospace; color: #fff; }
+        canvas { display: block; }
+        #controls { position: fixed; bottom: 20px; right: 20px; z-index: 10; }
+        #pauseBtn { background: rgba(0,0,0,0.5); color: #fff; border: 1px solid #0f0; padding: 8px 12px; cursor: pointer; }
+        #popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); padding: 20px; border: 1px solid #0f0; display: none; z-index: 20; max-width: 300px; text-align: center; }
+        #popup button { background: #0f0; color: #000; border: none; padding: 8px; cursor: pointer; margin-top: 10px; }
+        #fallback { display: none; text-align: center; padding: 20px; }
+        @media (max-width: 768px) { canvas { /* Reduce intensity for mobile */ } }
+    </style>
+</head>
+<body>
+    <canvas id="flavorCanvas" aria-label="Dynamic cascade of flavor words inspired by digital rain"></canvas>
+    <div id="controls">
+        <button id="pauseBtn" aria-label="Pause animation">Pause</button>
+    </div>
+    <div id="popup" role="dialog" aria-modal="true">
+        <h2 id="popupTitle"></h2>
+        <p id="popupDesc"></p>
+        <button onclick="closePopup()">Close</button>
+    </div>
+    <div id="fallback">Welcome to FlavorBot! Enable JavaScript for the full experience, or explore flavors via text: UMAMI, SPICY, CHOCOLATE...</div>
+
+    <script>
+        const canvas = document.getElementById('flavorCanvas');
+        const ctx = canvas.getContext('2d');
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+
+        // Sample flavor data (replace with your JSON/API fetch)
+        const flavorData = {
+            sweet: { words: ["CHOCOLATE", "HONEY", "VANILLA", "STRAWBERRY", "CARAMEL", "MAPLE", "BERRY", "PEACH"], colors: ["#FF69B4", "#FFA500", "#FFD700"], descriptions: { "CHOCOLATE": "Rich, melty bliss with cocoa notes." /* Add per word */ } },
+            savory: { words: ["UMAMI", "CHEESE", "MUSHROOM", "TRUFFLE", "BACON", "SOY", "GARLIC", "ONION"], colors: ["#228B22", "#556B2F", "#8B4513"], descriptions: { "UMAMI": "Deep, savory depth from glutamates." } },
+            spicy: { words: ["SPICY", "CHILI", "WASABI", "KIMCHI", "PEPPER", "GINGER", "CURRY", "SRIRACHA"], colors: ["#FF4500", "#DC143C", "#B22222"], descriptions: { "SPICY": "Fiery heat that tingles the tongue." } },
+            exotic: { words: ["DURIAN", "MATCHA", "YUZU", "ASAFETIDA", "SAFFRON", "TAMARIND", "LYCHEE", "DRAGONFRUIT"], colors: ["#FFD700", "#90EE90", "#FFFFE0"], descriptions: { "DURIAN": "Custard-like with funky onion vibes." } }
+            // Expand with your real data, e.g., fetch('your-api/flavors.json').then(data => flavorData = data);
+        };
+
+        const columns = Math.floor(width / 20);
+        const drops = Array(columns).fill(0).map(() => ({
+            y: Math.random() * height / 20,
+            speed: 1 + Math.random() * 0.5,
+            category: Object.keys(flavorData)[Math.floor(Math.random() * Object.keys(flavorData).length)]
+        }));
+
+        function getColorForWord(category) {
+            const colors = flavorData[category].colors;
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        let speedMultiplier = 1;
+        let isPaused = false;
+        let animationFrameId;
+
+        canvas.addEventListener('mouseenter', () => { if (!isPaused) speedMultiplier = 0.3; });
+        canvas.addEventListener('mouseleave', () => { if (!isPaused) speedMultiplier = 1; });
+
+        window.addEventListener('resize', () => {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        });
+
+        document.getElementById('pauseBtn').addEventListener('click', () => {
+            isPaused = !isPaused;
+            document.getElementById('pauseBtn').textContent = isPaused ? 'Play' : 'Pause';
+            if (!isPaused) draw();
+        });
+
+        // Mock click detection (simplified; for real, use raycasting)
+        canvas.addEventListener('click', (e) => {
+            if (isPaused) return;
+            // Simulate hitting a random word for demo
+            const category = drops[Math.floor(e.clientX / 20)].category;
+            const word = flavorData[category].words[Math.floor(Math.random() * flavorData[category].words.length)];
+            showPopup(word, flavorData[category].descriptions[word] || "Delicious flavor profile coming soon!");
+        });
+
+        function showPopup(title, desc) {
+            document.getElementById('popupTitle').textContent = title;
+            document.getElementById('popupDesc').textContent = desc;
+            document.getElementById('popup').style.display = 'block';
+            isPaused = true; // Pause rain during popup
+        }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+            isPaused = false;
+            draw();
+        }
+
+        function draw() {
+            if (isPaused) return;
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+            ctx.fillRect(0, 0, width, height);
+
+            drops.forEach((drop, i) => {
+                const category = drop.category;
+                const word = flavorData[category].words[Math.floor(Math.random() * flavorData[category].words.length)];
+                const color = getColorForWord(category);
+
+                ctx.save();
+                ctx.translate(i * 20, drop.y * 20);
+                ctx.rotate(Math.random() * 0.2 - 0.1);
+                ctx.shadowColor = color;
+                ctx.shadowBlur = 10;
+                ctx.fillStyle = color;
+                ctx.font = 'bold 18px monospace';
+                ctx.fillText(word, 0, 0);
+                ctx.restore();
+
+                drop.y += drop.speed * speedMultiplier;
+                if (drop.y * 20 > height && Math.random() > 0.97) {
+                    drop.y = 0;
+                    drop.category = Object.keys(flavorData)[Math.floor(Math.random() * Object.keys(flavorData).length)];
+                }
+            });
+
+            animationFrameId = requestAnimationFrame(draw);
+        }
+
+        // Fallback for no JS
+        if (!canvas.getContext) document.getElementById('fallback').style.display = 'block';
+        else draw();
+    </script>
+</body>
+</html>
+Initial Flavor Stream landing page.
+
