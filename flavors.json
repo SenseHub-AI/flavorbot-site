@@ -1,0 +1,145 @@
+{
+  "sweet": {
+    "words": ["CHOCOLATE", "HONEY", "VANILLA", "STRAWBERRY", "CARAMEL", "MAPLE", "BERRY", "PEACH", "CINNAMON", "BUTTERSCOTCH", "MARSHMALLOW", "COTTON CANDY"],
+    "colors": ["#FF69B4", "#FFA500", "#FFD700", "#FF1493"],
+    "descriptions": {
+      "CHOCOLATE": "Rich, melty bliss with cocoa notes and subtle bitterness.",
+      "HONEY": "Golden nectar with floral undertones and natural sweetness.",
+      "VANILLA": "Creamy and aromatic, evoking warmth and comfort.",
+      "STRAWBERRY": "Juicy red fruit with tart-sweet balance.",
+      "CARAMEL": "Buttery, toasty sugar melt with depth.",
+      "MAPLE": "Earthy syrup from trees, perfect for pancakes.",
+      "BERRY": "Mixed wild fruits bursting with antioxidants.",
+      "PEACH": "Fuzzy summer stone fruit with honeyed juice.",
+      "CINNAMON": "Warm spice adding sweet heat to baked goods.",
+      "BUTTERSCOTCH": "Brown sugar and butter fusion, creamy and indulgent.",
+      "MARSHMALLOW": "Fluffy, airy sweetness like campfire treats.",
+      "COTTON CANDY": "Sugary spun clouds with carnival vibes."
+    },
+    "aroma_notes": {
+      "CHOCOLATE": ["cocoa", "nutty", "vanilla"],
+      "HONEY": ["floral", "herbal"]
+    },
+    "rarity": 3
+  },
+  "savory": {
+    "words": ["CHEESE", "MUSHROOM", "TRUFFLE", "BACON", "SOY", "GARLIC", "ONION", "BEEF", "CHICKEN", "SEAWEED", "NUTS", "OLIVE"],
+    "colors": ["#228B22", "#556B2F", "#8B4513", "#808000"],
+    "descriptions": {
+      "CHEESE": "Fermented dairy with sharp, creamy profiles.",
+      "MUSHROOM": "Earthy fungi adding umami depth.",
+      "TRUFFLE": "Luxury underground treasure with pungent aroma.",
+      "BACON": "Smoky, salty pork strips for ultimate savor.",
+      "SOY": "Fermented beans delivering salty umami punch.",
+      "GARLIC": "Pungent bulb enhancing any dish.",
+      "ONION": "Layered allium with sweet-sharp versatility.",
+      "BEEF": "Rich meaty essence from grass-fed sources.",
+      "CHICKEN": "Mild poultry base for broths and roasts.",
+      "SEAWEED": "Oceanic greens with briny minerals.",
+      "NUTS": "Crunchy seeds like almonds or walnuts.",
+      "OLIVE": "Briny fruits from Mediterranean trees."
+    },
+    "aroma_notes": {
+      "TRUFFLE": ["earthy", "garlicky", "musky"]
+    },
+    "rarity": 4
+  },
+  "spicy": {
+    "words": ["SPICY", "CHILI", "WASABI", "KIMCHI", "PEPPER", "GINGER", "CURRY", "SRIRACHA", "JALAPENO", "HABANERO", "MUSTARD", "HORSERADISH"],
+    "colors": ["#FF4500", "#DC143C", "#B22222", "#FF0000"],
+    "descriptions": {
+      "SPICY": "Fiery heat that tingles the tongue.",
+      "CHILI": "Capsaicin-packed pods in red or green.",
+      "WASABI": "Japanese root with sinus-clearing punch.",
+      "KIMCHI": "Fermented cabbage with chili kick.",
+      "PEPPER": "Black or white spice from vines.",
+      "GINGER": "Zingy root adding warmth and bite.",
+      "CURRY": "Blend of spices for aromatic heat.",
+      "SRIRACHA": "Thai chili sauce with garlic tang.",
+      "JALAPENO": "Mild green pepper for salsas.",
+      "HABANERO": "Ultra-hot fruit with fruity notes.",
+      "MUSTARD": "Pungent seeds ground into paste.",
+      "HORSERADISH": "Root with eye-watering sharpness."
+    },
+    "aroma_notes": {
+      "GINGER": ["citrusy", "spicy"]
+    },
+    "rarity": 5
+  },
+  "exotic": {
+    "words": ["DURIAN", "MATCHA", "YUZU", "ASAFETIDA", "SAFFRON", "TAMARIND", "LYCHEE", "DRAGONFRUIT", "PASSIONFRUIT", "STAR ANISE", "CARDAMOM", "PANDAN"],
+    "colors": ["#FFD700", "#90EE90", "#FFFFE0", "#ADFF2F"],
+    "descriptions": {
+      "DURIAN": "Custard-like with funky onion vibes, king of fruits.",
+      "MATCHA": "Powdered green tea with grassy bitterness.",
+      "YUZU": "Japanese citrus hybrid, tart and floral.",
+      "ASAFETIDA": "Resinous spice mimicking onion-garlic.",
+      "SAFFRON": "World's priciest spice, crimson threads with hay-like notes.",
+      "TAMARIND": "Sour pod pulp for tangy sauces.",
+      "LYCHEE": "Sweet, floral nut from tropical trees.",
+      "DRAGONFRUIT": "Vibrant pink flesh with mild kiwi taste.",
+      "PASSIONFRUIT": "Tropical seed-filled pulp, tangy-sweet.",
+      "STAR ANISE": "Licorice-flavored pods for mulled drinks.",
+      "CARDAMOM": "Pods with eucalyptus-citrus spice.",
+      "PANDAN": "Screwpine leaves with nutty vanilla essence."
+    },
+    "aroma_notes": {
+      "YUZU": ["citrus", "floral", "pine"]
+    },
+    "rarity": 8
+  },
+  "sour": {
+    "words": ["LEMON", "LIME", "VINEGAR", "YOGURT", "PICKLE", "CRANBERRY", "RHUBARB", "KIWI"],
+    "colors": ["#FFFF00", "#32CD32", "#9ACD32"],
+    "descriptions": {
+      "LEMON": "Bright citrus with puckering acidity.",
+      "LIME": "Tropical twist on lemon, zesty and green.",
+      "VINEGAR": "Fermented acid for pickling and dressings.",
+      "YOGURT": "Tangy dairy culture with probiotic benefits.",
+      "PICKLE": "Cucumber in brine, crunchy and sour.",
+      "CRANBERRY": "Tart berry for sauces and juices.",
+      "RHUBARB": "Stalk vegetable treated as fruit, pie staple.",
+      "KIWI": "Fuzzy green fruit with seed-speckled tang."
+    },
+    "aroma_notes": {
+      "LEMON": ["citrus", "fresh"]
+    },
+    "rarity": 4
+  },
+  "bitter": {
+    "words": ["COFFEE", "DARK CHOCOLATE", "GRAPEFUIT", "KALE", "QUININE", "HOPS", "ENDIVE", "ARTICHOKE"],
+    "colors": ["#4B0082", "#483D8B", "#6A5ACD"],
+    "descriptions": {
+      "COFFEE": "Roasted beans with bold, caffeinated edge.",
+      "DARK CHOCOLATE": "High-cocoa intensity with minimal sugar.",
+      "GRAPEFUIT": "Citrus with pithy bitterness.",
+      "KALE": "Leafy green superfood, earthy and sharp.",
+      "QUININE": "Tonic water bitter from cinchona bark.",
+      "HOPS": "Beer flowers adding floral bitterness.",
+      "ENDIVE": "Chicory leaf with crisp bite.",
+      "ARTICHOKE": "Thistle vegetable with nutty undertones."
+    },
+    "aroma_notes": {
+      "COFFEE": ["roasted", "nutty"]
+    },
+    "rarity": 6
+  },
+  "umami": {
+    "words": ["UMAMI", "MSG", "PARMESAN", "TOMATO", "ANCHOVY", "MISO", "SHIITAKE", "KOMBU"],
+    "colors": ["#556B2F", "#808000", "#6B8E23"],
+    "descriptions": {
+      "UMAMI": "Fifth taste: savory depth from glutamates.",
+      "MSG": "Crystal enhancer of meaty flavors.",
+      "PARMESAN": "Aged cheese with nutty umami crystals.",
+      "TOMATO": "Ripe fruit amplifying savory notes.",
+      "ANCHOVY": "Salty fish for Caesar dressings.",
+      "MISO": "Fermented soybean paste, salty and deep.",
+      "SHIITAKE": "Dried mushrooms boosting broths.",
+      "KOMBU": "Kelp seaweed for dashi stock."
+    },
+    "aroma_notes": {
+      "MISO": ["fermented", "nutty"]
+    },
+    "rarity": 7
+  }
+}
